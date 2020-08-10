@@ -6,9 +6,12 @@ import { getCustomRepository } from 'typeorm';
 import AppointmentsRepository from '../repositories/AppointmentsRepository';
 import CreateAppointmentService from '../services/CreateAppointmentService';
 
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+
 const appointmentsRouter = Router();
 
-// eslint-disable-next-line no-shadow
+appointmentsRouter.use(ensureAuthenticated);
+
 appointmentsRouter.get('/', async (require, response) => {
     const appointmentsRepository = getCustomRepository(AppointmentsRepository);
     const appointments = await appointmentsRepository.find();
@@ -16,7 +19,6 @@ appointmentsRouter.get('/', async (require, response) => {
     return response.json(appointments);
 });
 
-// eslint-disable-next-line no-shadow
 appointmentsRouter.post('/', async (request, response) => {
     try {
         const { provider_id, date } = request.body;
